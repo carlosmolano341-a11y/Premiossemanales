@@ -1,0 +1,302 @@
+<!DOCTYPE html> 
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Premios Semanales - Agencia Estelar</title>
+  <link rel="stylesheet" href="style-semanales.css">
+</head>
+<body>
+  <header>
+    <h1>🏆 Premios Semanales</h1>
+    <p>Consulta tu progreso y ranking por semana</p>
+  </header>
+
+  <!-- Tabs de semanas -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="cambiarSemana(1)">Semana 1</button>
+    <button class="tab-btn" onclick="cambiarSemana(2)">Semana 2</button>
+    <button class="tab-btn" onclick="cambiarSemana(3)">Semana 3</button>
+    <button class="tab-btn" onclick="cambiarSemana(4)">Semana 4</button>
+  </div>
+
+  <!-- Contenido dinámico -->
+  <div id="semana-content"></div>
+
+  <footer>
+    <p>Agencia RebeldeLive © 2025</p>
+  </footer>
+
+  <script>
+    // Datos de actividades por semana y categoría
+    const actividades = {
+      1: {
+        "Inicial": {
+          nombre: "Reto 80s 🎶",
+          descripcion: "Haz 22 horas de transmisión y gana mínimo 40k diamantes.",
+          premios: "1er lugar: $15 | 2do: $10 | 3ro: $10"
+        },
+        "Media": {
+          nombre: "Reto Salsa 💃",
+          descripcion: "Haz 25 horas en vivo y acumula 12k diamantes.",
+          premios: "1er lugar: $15 | 2do: $10 | 3ro: $5"
+        },
+        "Avanzada": {
+          nombre: "Reto Estelar ✨",
+          descripcion: "Haz 20 horas en vivo y logra 3000 diamantes.",
+          premios: "1er lugar: $100 | 2do: $50 | 3ro: $25"
+        }
+      },
+      2: {
+        "Inicial": {
+          nombre: "Reto por Graduación 🎓",
+          descripcion: "Del 9 al 13 de septiembre de 0:00 hasta las 6:59pm hora Colombia: transmite 30 horas y haz 30k diamantes.",
+          premios: "Premio:1er puesto : 🌌 Galaxia en Live"
+        },
+        "Media": {
+          nombre: "Reto Media Alexa 🔊",
+          descripcion: "Del 9 al 13 de septiembre 0:00 hasta las 6:59pm hora Colombia : transmite 40 horas y haz 60k diamantes.",
+          premios: "Premio: 1er  puesto 🎁 Alexa"
+        },
+        "Avanzada": {
+          nombre: "Reto Batallas: el creador con más batallas gana",
+          descripcion: "Del 9 al 13 de septiembre 0:00 hasta las 6:59pm hora Colombia : transmite 40 horas y acumula 100k diamantes.",
+          premios: "Premio: 1er puesto 🚕 Carro Amarillo (999 monedas)"
+        }
+      },
+      3: {
+        "Inicial": {
+          nombre: "Reto Estrellas Fugaces amor y amistad: decora tu setup 🌠",
+          descripcion: "Del 14 al 20 de septiembre 0:00 hasta las 6:59pm hora Colombia: transmite 20 horas y haz 30k diamantes.",
+          premios: "Premio: Smartwatch"
+        },
+        "Media": {
+          nombre: "Reto de Batallas amor y amistad: decora tu setup ✨",
+          descripcion: "Del 14 al 20 de septiembre 0:00 hasta las 6:59pm hora Colombia: completa 21 horas y haz 80k diamantes.",
+          premios: "Premio: 1er puesto Banda animal 2500 monedas 2do puesto Refugio de amor 1200 monedas y 3er puesto cintas florecientes"
+        },
+        "Avanzada": {
+          nombre: "Reto Supernova-amor y amistad: decora tu setup 💥",
+          descripcion: "Del 14 al 20 de septiembre 0:00 hasta las 6:59pm hora Colombia: transmite 28 horas y haz 220k diamantes.",
+          premios: "Premio: primer lugar 40 usd segundo lugar 15 usd tercer lugar 10 usd"
+        }
+      },
+      4: {
+        "Inicial": {
+          nombre: "Reto Cometas ☄️",
+          descripcion: "Del 21 al 27 de septiembre 0:00 hasta las 6:59pm hora Colombia: transmite 14 horas y alcanza 28k diamantes.",
+          premios: "Premio: 🎁 10 usd"
+        },
+        "Media": {
+          nombre: "Reto Órbita 🌍",
+          descripcion: "Del 21 al 27 de septiembre: transmite 28 horas y haz 100k diamantes.",
+          premios: "Premio: 🎬 Cámara web HD"
+        },
+        "Avanzada": {
+          nombre: "Reto Eclipse Gana Batalla Oficial 🌑",
+          descripcion: "Del 21 al 27 de septiembre: transmite 25 horas y gana 250k diamantes en una batalla oficial.",
+          premios: "Premio: 🚀 40 usd"
+        }
+      }
+    };
+
+    let ranking = []; // Aquí se guardan los datos de los streamers
+
+    function cambiarSemana(numSemana) {
+      const content = document.getElementById("semana-content");
+      content.innerHTML = `
+        <h2>Semana ${numSemana}</h2>
+        <p>Selecciona tu categoría:</p>
+        <button onclick="mostrarCategoria(${numSemana}, 'Inicial')">Categoría Inicial</button>
+        <button onclick="mostrarCategoria(${numSemana}, 'Media')">Categoría Media</button>
+        <button onclick="mostrarCategoria(${numSemana}, 'Avanzada')">Categoría Avanzada</button>
+      `;
+    }
+
+    function mostrarCategoria(semana, categoria) {
+      const actividad = actividades[semana][categoria];
+      const content = document.getElementById("semana-content");
+
+      content.innerHTML = `
+        <h2>${actividad.nombre}</h2>
+        <p><strong>Descripción:</strong> ${actividad.descripcion}</p>
+        <p><strong>Premios:</strong> ${actividad.premios}</p>
+
+        <h3>Ingresa tus datos:</h3>
+        <form onsubmit="registrarProgreso(event, '${actividad.nombre}')">
+          <label>Diamantes 💎: <input type="number" id="diamantes" required></label><br>
+          <label>Horas ⏰: <input type="number" id="horas" required></label><br>
+          <label>Días 📅: <input type="number" id="dias" required></label><br>
+          <label>Tu Nombre: <input type="text" id="nombre" required></label><br>
+          <button type="submit">Enviar</button>
+        </form>
+
+        <div id="ranking"></div>
+      `;
+    }
+
+    function registrarProgreso(e, actividadNombre) {
+      e.preventDefault();
+      const nombre = document.getElementById("nombre").value;
+      const diamantes = parseInt(document.getElementById("diamantes").value);
+      const horas = parseInt(document.getElementById("horas").value);
+      const dias = parseInt(document.getElementById("dias").value);
+
+      ranking.push({ nombre, diamantes, horas, dias, actividad: actividadNombre });
+
+      // Ordenamos ranking por diamantes
+      ranking.sort((a, b) => b.diamantes - a.diamantes);
+
+      mostrarRanking();
+    }
+
+    function mostrarRanking() {
+      let html = "<h3>🏆 Ranking Actual</h3><ol>";
+      ranking.forEach((r, i) => {
+        html += `<li>${r.nombre} - ${r.diamantes} diamantes - ${r.horas}h - ${r.dias} días</li>`;
+      });
+      html += "</ol>";
+      document.getElementById("ranking").innerHTML = html;
+    }
+
+</script>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulario Streamer</title>
+<style>
+  body {
+    background-color: #010101;
+    color: #FFFFFF;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #010101;
+    border: 2px solid #69C9D0;
+    border-radius: 15px;
+  }
+  h1 {
+    text-align: center;
+    color: #EE1D52;
+  }
+  label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: #69C9D0;
+    font-weight: bold;
+  }
+  input[type="text"], input[type="number"], input[type="date"], input[type="url"], select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px solid #69C9D0;
+    background-color: #010101;
+    color: #FFFFFF;
+    font-size: 1rem;
+  }
+  select {
+    color: #010101;
+  }
+  button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background-color: #EE1D52;
+    color: #FFFFFF;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover {
+    background-color: #69C9D0;
+  }
+  @media (max-width: 600px) {
+    .container {
+      margin: 10px;
+      padding: 15px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Registro de Progreso</h1>
+  <form id="progressForm">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" name="nombre" required>
+
+    <label for="actividad">Actividad:</label>
+    <input type="text" id="actividad" name="actividad" required>
+
+    <label for="categoria">Categoría:</label>
+    <select id="categoria" name="categoria" required>
+      <option value="">Selecciona</option>
+      <option value="Inicial">Inicial</option>
+      <option value="Media">Media</option>
+      <option value="Avanzada">Avanzada</option>
+    </select>
+
+    <label for="horas">Horas de transmisión:</label>
+    <input type="number" id="horas" name="horas" min="0" required>
+
+    <label for="dias">Días de transmisión:</label>
+    <input type="number" id="dias" name="dias" min="0" required>
+
+    <label for="diamantes">Diamantes obtenidos:</label>
+    <input type="number" id="diamantes" name="diamantes" min="0" required>
+
+    <label for="fecha">Fecha:</label>
+    <input type="date" id="fecha" name="fecha" required>
+
+    <label for="evidenciaURL">Enlace de evidencia (opcional):</label>
+    <input type="url" id="evidenciaURL" name="evidenciaURL" placeholder="https://">
+
+    <button type="submit">Enviar Progreso</button>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+  (function() {
+    emailjs.init("PvdlU_qO1uvH3AdHU"); // reemplaza con tu user ID de EmailJS
+  })();
+
+  const form = document.getElementById('progressForm');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Recoge los datos del formulario
+    const formData = {
+      nombre: document.getElementById('nombre').value,
+      actividad: document.getElementById('actividad').value,
+      categoria: document.getElementById('categoria').value,
+      horas: document.getElementById('horas').value,
+      dias: document.getElementById('dias').value,
+      diamantes: document.getElementById('diamantes').value,
+      fecha: document.getElementById('fecha').value,
+      evidencia: document.getElementById('evidenciaURL').value
+    };
+
+    emailjs.send('service_qra69t6', 'template_f7q34oo', formData)
+      .then(function(response) {
+        alert('✅ Progreso enviado correctamente!');
+        form.reset();
+      }, function(error) {
+        alert('❌ Error al enviar: ' + JSON.stringify(error));
+      });
+  });
+</script>
+
+</body>
+</html>
